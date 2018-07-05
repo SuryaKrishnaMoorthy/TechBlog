@@ -1,0 +1,34 @@
+.jumbotron, header {
+  background-color: #F37F89 !important;
+  color: #F0EDEE !important;
+  letter-spacing: 5px;
+  min-height: 330px !important;
+}
+
+.jumbotron h1 {
+  word-spacing: .5em;
+}
+
+.jumbotron p {
+  font-size: 1em;
+}
+
+.alert-message {
+  display: none;
+}
+
+button {
+  background-color: #F9C9CB !important;
+}
+
+.form-create-button,.form-cancel-button {
+  background-color: #F37F89 !important;
+}
+
+#content-input {
+  height: 200px !important;
+}
+
+.edit, .delete {
+  text-decoration: none !important;
+}
