@@ -10,7 +10,7 @@ const inputForm = () => {
     <textarea class="form-control content" id="content-input" aria-label="With textarea" placeholder="Content here.."></textarea>
   </div>
   <button type="submit" class="form-create-button btn btn-primary mb-2">Create New Post</button>
-  <button type="submit" class="form-cancel-button btn btn-primary mb-2">Cancel</button>
+  <button type="button" class="form-cancel-button btn btn-primary mb-2">Cancel</button>
 </form>`
 }
 

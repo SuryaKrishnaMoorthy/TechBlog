@@ -54,7 +54,15 @@ const editArticle = (id, title, content, sideBarItem) => {
 
     // Display input form with corresponding title and contents
     const formDiv = document.querySelector(".blog-post .row .col");
+    const currentDOM = formDiv.innerHTML;
     formDiv.innerHTML = inputForm();
+    const cancelButton = document.querySelector(".form-cancel-button");
+    cancelButton.addEventListener("click", (event) => {
+      formDiv.innerHTML = currentDOM;
+      const showEditDelete = document.querySelector(".edit-delete");
+      showEditDelete.style.display = "inline-block";
+      showEditDelete.style.float = "right";
+    });
     const titleNode = document.querySelector(".title");
     const contentNode = document.querySelector(".content");
     const createButtonNode = document.querySelector(".form-create-button");
@@ -62,6 +70,8 @@ const editArticle = (id, title, content, sideBarItem) => {
     contentNode.textContent = content;
     createButtonNode.textContent = "Update Post";
     updatePost(id, sideBarItem);
+    const hideEditDelete = document.querySelector(".edit-delete");
+    hideEditDelete.style = "display:none;";
   })
 }
 

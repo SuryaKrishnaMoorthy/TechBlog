@@ -67,7 +67,15 @@ const createForm = () => {
 
     // Display input form and call submit function
     const formDiv = document.querySelector(".blog-post .row .col");
+    const currentDOM = formDiv.innerHTML;
     formDiv.innerHTML = inputForm();
+    const cancelButton = document.querySelector(".form-cancel-button");
+    cancelButton.addEventListener("click", (event) => {
+      formDiv.innerHTML = currentDOM;
+      const showEditDelete = document.querySelector(".edit-delete");
+      showEditDelete.style.display = "inline-block";
+      showEditDelete.style.float = "right";
+    });
     const hideEditDelete = document.querySelector(".edit-delete");
     hideEditDelete.style = "display:none;";
     submitForm();

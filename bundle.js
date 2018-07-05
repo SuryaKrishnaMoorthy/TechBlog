@@ -77,7 +77,15 @@ const createForm = () => {
 
     // Display input form and call submit function
     const formDiv = document.querySelector(".blog-post .row .col");
+    const currentDOM = formDiv.innerHTML;
     formDiv.innerHTML = inputForm();
+    const cancelButton = document.querySelector(".form-cancel-button");
+    cancelButton.addEventListener("click", (event) => {
+      formDiv.innerHTML = currentDOM;
+      const showEditDelete = document.querySelector(".edit-delete");
+      showEditDelete.style.display = "inline-block";
+      showEditDelete.style.float = "right";
+    });
     const hideEditDelete = document.querySelector(".edit-delete");
     hideEditDelete.style = "display:none;";
     submitForm();
@@ -186,7 +194,15 @@ const editArticle = (id, title, content, sideBarItem) => {
 
     // Display input form with corresponding title and contents
     const formDiv = document.querySelector(".blog-post .row .col");
+    const currentDOM = formDiv.innerHTML;
     formDiv.innerHTML = inputForm();
+    const cancelButton = document.querySelector(".form-cancel-button");
+    cancelButton.addEventListener("click", (event) => {
+      formDiv.innerHTML = currentDOM;
+      const showEditDelete = document.querySelector(".edit-delete");
+      showEditDelete.style.display = "inline-block";
+      showEditDelete.style.float = "right";
+    });
     const titleNode = document.querySelector(".title");
     const contentNode = document.querySelector(".content");
     const createButtonNode = document.querySelector(".form-create-button");
@@ -194,6 +210,8 @@ const editArticle = (id, title, content, sideBarItem) => {
     contentNode.textContent = content;
     createButtonNode.textContent = "Update Post";
     updatePost(id, sideBarItem);
+    const hideEditDelete = document.querySelector(".edit-delete");
+    hideEditDelete.style = "display:none;";
   })
 }
 
@@ -393,7 +411,7 @@ const editAndDelete = () => {
   deleteButton.textContent = "Delete";
   editButtonSection.append(deleteButton);
 
-
+  // Show the edit and delete button
   const showEditDelete = document.querySelector(".edit-delete");
   showEditDelete.style.display = "inline-block";
   showEditDelete.style.float = "right";
@@ -414,7 +432,7 @@ const inputForm = () => {
     <textarea class="form-control content" id="content-input" aria-label="With textarea" placeholder="Content here.."></textarea>
   </div>
   <button type="submit" class="form-create-button btn btn-primary mb-2">Create New Post</button>
-  <button type="submit" class="form-cancel-button btn btn-primary mb-2">Cancel</button>
+  <button type="button" class="form-cancel-button btn btn-primary mb-2">Cancel</button>
 </form>`
 }
 

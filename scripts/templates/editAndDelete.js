@@ -21,7 +21,7 @@ const editAndDelete = () => {
   deleteButton.textContent = "Delete";
   editButtonSection.append(deleteButton);
 
-
+  // Show the edit and delete button
   const showEditDelete = document.querySelector(".edit-delete");
   showEditDelete.style.display = "inline-block";
   showEditDelete.style.float = "right";
