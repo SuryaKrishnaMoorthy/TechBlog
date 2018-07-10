@@ -44,14 +44,14 @@ const submitForm = () => {
 
         // Show the new element as selected in sidebar. Remove and add active class
         const div = document.querySelector(".list-group");
-        const activeANode = Array.from(div.childNodes).filter((aTag, index, array) => index !== 0 && aTag.classList.contains("active"));
+        const activeANode = Array.from(div.childNodes).filter((aTag, index, array) => index !== 0 && aTag.classList && aTag.classList.contains("active"));
         Array.from(activeANode)[0].classList.remove("active");
-        div.lastChild.classList.add("active");
+        div.firstChild.classList.add("active");
 
         // Display the created post. Enable the edit and delete button
         displayArticle(title, content);
-        deleteArticle(id, div.lastChild);
-        editArticle(id, title, content);
+        deleteArticle(id, div.firstChild);
+        editArticle(id, title, content, div.firstChild);
       })
       .catch(err => {
 
@@ -100,6 +100,7 @@ module.exports = {
 },{"../requests/requests":7,"../templates/article":8,"../templates/inputForm":10,"./delete":3,"./edit":4,"./sideBarRender":6}],3:[function(require,module,exports){
 const displayArticle = require("../templates/article");
 const requests = require("../requests/requests");
+//const editArticle = require("./edit");
 
 // Function to delete post
 const deleteForm = (id, sideBarItem) => {
@@ -110,29 +111,26 @@ const deleteForm = (id, sideBarItem) => {
     const alertMessage = document.querySelector(".alert-message");
     alertMessage.style.display = "none";
     alertMessage.innerHTML = "";
-
-    // Axios request to delete post
-    requests.deletePost(id)
-      .then(result => {
-        sideBarItem.style.display = "none";
-
-        // Display first post
-        const dataId = sideBarItem.parentNode.childNodes[1].getAttribute("data_id");
-        requests.getPost(dataId).then(data => {
-          displayArticle(data.data.blogPost.title, data.data.blogPost.content);
-          sideBarItem.parentNode.childNodes[1].classList.add("active");
-        })
-      })
-      .catch((err) => {
-
-        // Display error message
-        const alertMessage = document.querySelector(".alert-message");
-        const p = document.createElement("p");
-        p.textContent = JSON.stringify(err.response.data.error.message);
-        alertMessage.append(p);
-        alertMessage.style.display = "block";
-      })
+    deleteFromServer(id, sideBarItem);
   })
+}
+
+const deleteFromServer = (id, sideBarItem) => {
+
+  // Axios request to delete post
+  requests.deletePost(id)
+    .then(result => {
+      location.reload();
+    })
+    .catch((err) => {
+
+      // Display error message
+      const alertMessage = document.querySelector(".alert-message");
+      const p = document.createElement("p");
+      p.textContent = JSON.stringify(err.response.data.error.message);
+      alertMessage.append(p);
+      alertMessage.style.display = "block";
+    })
 }
 
 module.exports = deleteForm;
@@ -176,9 +174,11 @@ const updatePost = (id, sideBarItem) => {
         alertMessage.style.display = "block";
       })
 
-      // Display post after submission
-      const formDiv = document.querySelector(".blog-post .row .col");
-      displayArticle(title, content);
+    // Display post after submission
+    const formDiv = document.querySelector(".blog-post .row .col");
+    displayArticle(title, content);
+    editArticle(id, title, content, sideBarItem);
+    deletePost(id, sideBarItem);
   });
 };
 
@@ -258,9 +258,9 @@ const displayTitles = () => {
 
       // Display first post as active and corresponding article on post body
       const ul = document.querySelector(".list-group");
-      if(ul.childNodes[1]) ul.childNodes[1].classList.add("active");
+      if(ul.childNodes) ul.childNodes[0].classList.add("active");
       sideBar.displayArticle();
-      renderFirstPost(posts[0].id, ul.childNodes[1]);
+      renderFirstPost(posts[posts.length-1].id, ul.childNodes[0]);
     })
     .catch((err) => {
 
@@ -285,45 +285,48 @@ const deletePost = require("./delete");
 // Function to append each post to sidebar
 const sideBarDiv = document.querySelector(".list-group");
 const appendItem = (id, title) => {
-  sideBarDiv.append(sideBarItem(id, title));
+  const sideBaritem = sideBarItem(id, title);
+  sideBarDiv.insertBefore(sideBaritem, sideBarDiv.childNodes[0]);
+  clickEvent(sideBaritem);
 }
 
 // Display title and content of post when side bar post is clicked
 const displayArticle = () => {
   const sideBarItems = Array.from(document.querySelectorAll(".list-group a"));
-  sideBarItems.forEach(sideBaritem => {
-    sideBaritem.addEventListener("click", (event) => {
+  sideBarItems.forEach(sideBaritem => clickEvent(sideBaritem));
+};
 
-      // Remove the alert message if it exists
-      const alertMessage = document.querySelector(".alert-message");
-      alertMessage.style.display = "none";
-      alertMessage.innerHTML = "";
+const clickEvent = (sideBaritem) => {
+  sideBaritem.addEventListener("click", () => {
+    // Remove the alert message if it exists
+    const alertMessage = document.querySelector(".alert-message");
+    alertMessage.style.display = "none";
+    alertMessage.innerHTML = "";
 
-      // Axios get one request
-      const id = sideBaritem.getAttribute("data_id");
-      request.getPost(id)
-        .then(post => {
+    // Axios get one request
+    const id = sideBaritem.getAttribute("data_id");
+    request.getPost(id)
+      .then(post => {
 
-          // Display corresponding article
-          const postExact = post.data.blogPost;
-          article(postExact.title, postExact.content);
+        // Display corresponding article
+        const postExact = post.data.blogPost;
+        article(postExact.title, postExact.content);
 
-          // Displays form when user clicks the sidebar and then edit button
-          editArticle(postExact.id, postExact.title, postExact.content, sideBaritem);
+        // Displays form when user clicks the sidebar and then edit button
+        editArticle(postExact.id, postExact.title, postExact.content, sideBaritem);
 
-          // Enable deleteButton by fn call;
-          deletePost(postExact.id, sideBaritem);
-        })
-        .catch(err => {
+        // Enable deleteButton by fn call;
+        deletePost(postExact.id, sideBaritem);
+      })
+      .catch(err => {
 
-          // Display error message
-          const alertMessage = document.querySelector(".alert-message");
-          const p = document.createElement("p");
-          p.textContent = JSON.stringify(err.response.data.error.message);
-          alertMessage.append(p);
-          alertMessage.style.display = "block";
-        })
-    });
+        // Display error message
+        const alertMessage = document.querySelector(".alert-message");
+        const p = document.createElement("p");
+        p.textContent = JSON.stringify(err.response.data.error.message);
+        alertMessage.append(p);
+        alertMessage.style.display = "block";
+      })
   });
 };
 

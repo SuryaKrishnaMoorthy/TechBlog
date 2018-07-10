@@ -34,14 +34,14 @@ const submitForm = () => {
 
         // Show the new element as selected in sidebar. Remove and add active class
         const div = document.querySelector(".list-group");
-        const activeANode = Array.from(div.childNodes).filter((aTag, index, array) => index !== 0 && aTag.classList.contains("active"));
+        const activeANode = Array.from(div.childNodes).filter((aTag, index, array) => index !== 0 && aTag.classList && aTag.classList.contains("active"));
         Array.from(activeANode)[0].classList.remove("active");
-        div.lastChild.classList.add("active");
+        div.firstChild.classList.add("active");
 
         // Display the created post. Enable the edit and delete button
         displayArticle(title, content);
-        deleteArticle(id, div.lastChild);
-        editArticle(id, title, content);
+        deleteArticle(id, div.firstChild);
+        editArticle(id, title, content, div.firstChild);
       })
       .catch(err => {
 

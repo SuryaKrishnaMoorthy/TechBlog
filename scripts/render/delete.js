@@ -1,5 +1,6 @@
 const displayArticle = require("../templates/article");
 const requests = require("../requests/requests");
+//const editArticle = require("./edit");
 
 // Function to delete post
 const deleteForm = (id, sideBarItem) => {
@@ -10,29 +11,26 @@ const deleteForm = (id, sideBarItem) => {
     const alertMessage = document.querySelector(".alert-message");
     alertMessage.style.display = "none";
     alertMessage.innerHTML = "";
-
-    // Axios request to delete post
-    requests.deletePost(id)
-      .then(result => {
-        sideBarItem.style.display = "none";
-
-        // Display first post
-        const dataId = sideBarItem.parentNode.childNodes[1].getAttribute("data_id");
-        requests.getPost(dataId).then(data => {
-          displayArticle(data.data.blogPost.title, data.data.blogPost.content);
-          sideBarItem.parentNode.childNodes[1].classList.add("active");
-        })
-      })
-      .catch((err) => {
-
-        // Display error message
-        const alertMessage = document.querySelector(".alert-message");
-        const p = document.createElement("p");
-        p.textContent = JSON.stringify(err.response.data.error.message);
-        alertMessage.append(p);
-        alertMessage.style.display = "block";
-      })
+    deleteFromServer(id, sideBarItem);
   })
+}
+
+const deleteFromServer = (id, sideBarItem) => {
+
+  // Axios request to delete post
+  requests.deletePost(id)
+    .then(result => {
+      location.reload();
+    })
+    .catch((err) => {
+
+      // Display error message
+      const alertMessage = document.querySelector(".alert-message");
+      const p = document.createElement("p");
+      p.textContent = JSON.stringify(err.response.data.error.message);
+      alertMessage.append(p);
+      alertMessage.style.display = "block";
+    })
 }
 
 module.exports = deleteForm;

@@ -38,9 +38,9 @@ const displayTitles = () => {
 
       // Display first post as active and corresponding article on post body
       const ul = document.querySelector(".list-group");
-      if(ul.childNodes[1]) ul.childNodes[1].classList.add("active");
+      if(ul.childNodes) ul.childNodes[0].classList.add("active");
       sideBar.displayArticle();
-      renderFirstPost(posts[0].id, ul.childNodes[1]);
+      renderFirstPost(posts[posts.length-1].id, ul.childNodes[0]);
     })
     .catch((err) => {
 

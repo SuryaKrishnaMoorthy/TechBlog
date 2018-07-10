@@ -36,9 +36,11 @@ const updatePost = (id, sideBarItem) => {
         alertMessage.style.display = "block";
       })
 
-      // Display post after submission
-      const formDiv = document.querySelector(".blog-post .row .col");
-      displayArticle(title, content);
+    // Display post after submission
+    const formDiv = document.querySelector(".blog-post .row .col");
+    displayArticle(title, content);
+    editArticle(id, title, content, sideBarItem);
+    deletePost(id, sideBarItem);
   });
 };
 
